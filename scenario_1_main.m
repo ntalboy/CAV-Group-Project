@@ -1,6 +1,6 @@
 function scenario_1_main
 clc
-[allData, scenario, sensors] = scenario_1_test();
+[allData, scenario, sensors] = scenario_1_function();
 plot(scenario)
 disp(sensors(1))
 time = 0;
@@ -9,6 +9,6 @@ while advance(scenario)
     pause(0.05)
     radar = sensors(1);
     detections = allData.ObjectDetections;
-    disp(detections(7).Measurement)
+    disp(detections)
    
 end

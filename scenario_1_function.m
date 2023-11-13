@@ -1,4 +1,4 @@
-function [allData, scenario, sensors] = scenario_1_test()
+function [allData, scenario, sensors] = scenario_1_function()
 %scenario_1_test - Returns sensor detections
 %    allData = scenario_1_test returns sensor detections in a structure
 %    with time for an internally defined scenario and sensor suite.
