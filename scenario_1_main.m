@@ -3,11 +3,39 @@ clc
 close all
 [allData, scenario, sensors] = scenario_1_function();
 plot(scenario)
-disp(sensors(1))
-time = 0;
+
+detectionsIndex = 1;
+ObjectDetections = allData(1).ObjectDetections;
+numDetections = length(ObjectDetections);
+if numDetections > 0
+    if ObjectDetections{1}.Time == 0
+        detectionsIndex = 2;
+        fprintf('number of detections: %d\n',length(ObjectDetections))
+        for i = 1:length(ObjectDetections)
+            disp(ObjectDetections{i})
+        end
+    end
+end
 while advance(scenario)
-    time = time + 1;
     pause(0.05)
+    
+    fprintf('simulation time: %.2f\n',scenario.SimulationTime)
+    % edge case when goes to last index
+    if numDetections > detectionsIndex
+        ObjectDetections = allData(detectionsIndex).ObjectDetections;
+    else
+        % set back to the beginning so that it won't run anymore
+        continue
+    end
+    
+    if ObjectDetections{1}.Time == scenario.SimulationTime
+        detectionsIndex = detectionsIndex + 1;
+        fprintf('number of detections: %d\n',length(ObjectDetections))
+        for i = 1:length(ObjectDetections)
+            disp(ObjectDetections{i})
+        end
+    end
+    
 
     % % allData fields
     % disp('allData:')
@@ -35,109 +63,5 @@ while advance(scenario)
     % disp('Velocity:')
     % disp(class(Velocity))
     % disp(Velocity)
-
-
-    % sensor detections
-    ObjectDetections = allData.ObjectDetections;
-    Detection = ObjectDetections{1};
-    Measurement = Detection.Measurement;
-    ObjectAttributes = Detection.ObjectAttributes;
-    ObjectAttributes = ObjectAttributes{1};
-     
-    disp('ObjectDetections:')
-    disp(class(Detection))
-    disp(Detection)
-    fprintf('Measurement:\n');
-    disp(class(Measurement))
-    disp(Measurement)
-    disp('ObjectAttributes:')
-    disp(class(ObjectAttributes))
-    disp(ObjectAttributes)
-
-    % LaneDetections = allData.LaneDetections;
-    % 
-    % disp('LaneDetections:')
-    % disp(class(LaneDetections))
-    % disp(LaneDetections) % doesn't display or is null? 0 detections
-    % 
-    % PointClouds = allData.PointClouds;
-    % % PointClouds = PointClouds{1}; % no point clouds are in the cell
-    % 
-    % disp('PointClouds:')
-    % disp(class(PointClouds))
-    % disp(PointClouds)
-    % 
-    % % This one is also an empty cell
-    % INSMeasurements = allData.INSMeasurements;
-    % 
-    % disp('INSMeasurements')
-    % disp(class(INSMeasurements))
-    % disp(INSMeasurements)
-
-    % % scenario data
-    % disp('scenario:')
-    % disp(class(scenario))
-    % disp(scenario)
-    % Actors = scenario.Actors;
-    % FrontOverhang = Actors.FrontOverhang;
-    % RearOverhang = Actors.RearOverhang;
-    % Wheelbase = Actors.Wheelbase;
-    % EntryTime = Actors.EntryTime;
-    % ExitTime = Actors.ExitTime;
-    % ActorID = Actors.ActorID;
-    % ClassID = Actors.ClassID;
-    % Name = Actors.Name;
-    % PlotColor = Actors.PlotColor;
-    % Position = Actors.Position;
-    % Velocity = Actors.Velocity;
-    % Yaw = Actors.Yaw;
-    % Pitch = Actors.Pitch;
-    % Roll = Actors.Roll;
-    % AngularVelocity = Actors.AngularVelocity;
-    % Length = Actors.Length;
-    % Width = Actors.Width;
-    % Height = Actors.Height;
-    % Mesh = Actors.Mesh;
-    % RCSPattern = Actors.RCSPattern;
-    % RCSAzimuthAngles = Actors.RCSAzimuthAngles;
-    % RCSElevationAngles = Actors.RCSElevationAngles;
-
-    % disp('Actors:')
-    % disp(class(Actors))
-    % disp(Actors)
-    % disp('settings:')
-    % disp(FrontOverhang)
-    % disp(RearOverhang)
-    % disp(Wheelbase)
-    % disp(EntryTime)
-    % disp(ExitTime)
-    % disp(ActorID)
-    % disp(ClassID)
-    % disp(Name)
-    % disp(PlotColor)
-    % disp(Position)
-    % disp(Velocity)
-    % disp(Yaw)
-    % disp(Pitch)
-    % disp(Roll)
-    % disp(AngularVelocity)
-    % disp(Length)
-    % disp(Width)
-    % disp(Height)
-    % disp(Mesh)
-    % disp(RCSPattern)
-    % disp(RCSAzimuthAngles)
-    % disp(RCSElevationAngles)
-
-
-    % % sensor generators
-    % radar = sensors(1);
-    % radar = radar{1};
-    % disp('sensors:')
-    % disp(class(sensors))
-    % disp(sensors)
-    % disp('radar sensors:')
-    % disp(class(radar))
-    % disp(radar)
 
 end
