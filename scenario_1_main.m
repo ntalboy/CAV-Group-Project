@@ -1,67 +1,54 @@
 function scenario_1_main
 clc
 close all
-[allData, scenario, sensors] = scenario_1_function();
+[allData, scenario, sensors] = scenario_traffic_light_final_CAV();
 plot(scenario)
 
+% start at 2 because index 1 time is zero, and simulation starts at 0.01
 detectionsIndex = 1;
-ObjectDetections = allData(1).ObjectDetections;
-numDetections = length(ObjectDetections);
-if numDetections > 0
-    if ObjectDetections{1}.Time == 0
-        detectionsIndex = 2;
-        fprintf('number of detections: %d\n',length(ObjectDetections))
-        for i = 1:length(ObjectDetections)
-            disp(ObjectDetections{i})
-        end
-    end
-end
+numDetections = length(allData);
+
 while advance(scenario)
     pause(0.05)
     
-    fprintf('simulation time: %.2f\n',scenario.SimulationTime)
+    % fprintf('simulation time: %.2f\n',scenario.SimulationTime)
     % edge case when goes to last index
     if numDetections > detectionsIndex
         ObjectDetections = allData(detectionsIndex).ObjectDetections;
+        numObjects = length(ObjectDetections);
     else
         % set back to the beginning so that it won't run anymore
+        % disp('continuing')
         continue
     end
     
-    if ObjectDetections{1}.Time == scenario.SimulationTime
+    if ObjectDetections{1}.Time <= scenario.SimulationTime
         detectionsIndex = detectionsIndex + 1;
-        fprintf('number of detections: %d\n',length(ObjectDetections))
-        for i = 1:length(ObjectDetections)
-            disp(ObjectDetections{i})
-        end
+        % fprintf('number of detections: %d\n',numObjects)
+        
+
+        
+        for i = 1:numObjects
+            xmeasurement = ObjectDetections{i}.Measurement(1);
+            ymeasurement = ObjectDetections{i}.Measurement(2);
+            distance = sqrt(xmeasurement^2 + ymeasurement^2);
+            % disp(measurement)
+            % disp(distance)
+            if distance < 4
+                if abs(xmeasurement) > abs(ymeasurement)
+                    if xmeasurement > 0
+                        disp('too close in front!')
+                    else
+                        disp('too close in back!')
+                    end
+                else
+                    if ymeasurement > 0
+                        disp('too close on left!')
+                    else
+                        disp('too close on right!')
+                    end
+                end
+            end
+        end 
     end
-    
-
-    % % allData fields
-    % disp('allData:')
-    % disp(class(allData))
-    % disp(allData)
-
-    % % Time - for some reason this is always 0?
-    % % simulation time is in scenario struct
-    % Time = allData.Time;
-    % disp('simulation time:')
-    % disp(class(Time))
-    % disp(Time)
-
-    % ActorPoses = allData.ActorPoses;
-    % ActorID = ActorPoses.ActorID;
-    % Position = ActorPoses.Position;
-    % Velocity = ActorPoses.Velocity;
-    % 
-    % disp('ActorPoses:')
-    % disp(class(ActorPoses))
-    % disp(ActorPoses)
-    % disp('Position:')
-    % disp(class(Position))
-    % disp(Position)
-    % disp('Velocity:')
-    % disp(class(Velocity))
-    % disp(Velocity)
-
 end
